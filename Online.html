@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mnemonica Top Card Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input { margin: 5px; padding: 5px; text-transform: uppercase; }
+        button { background-color: lightblue; padding: 10px; cursor: pointer; }
+        #result { font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <h2>Mnemonica Top Card Calculator</h2>
+    
+    <input type="text" id="MEM" placeholder="Enter Card (e.g., 4C)">
+    <input type="number" id="SNN" placeholder="Enter Position (1-52)">
+    
+    <br><br>
+    
+    <button id="calculateButton">Calculate</button>
+    
+    <p id="result"></p>
+
+    <script>
+        const mnemonicaStack = {
+            1: "4C", 2: "2H", 3: "7D", 4: "3C", 5: "4H", 6: "6D", 7: "AS", 8: "5H", 9: "9S", 
+            10: "2S", 11: "QH", 12: "3D", 13: "QC", 14: "8H", 15: "6S", 16: "5S", 17: "9H", 
+            18: "KC", 19: "2D", 20: "JH", 21: "3S", 22: "8S", 23: "6H", 24: "XC", 25: "5D", 
+            26: "KD", 27: "2C", 28: "3H", 29: "8D", 30: "5C", 31: "KS", 32: "JD", 33: "8C", 
+            34: "XS", 35: "KH", 36: "JC", 37: "7S", 38: "XH", 39: "AD", 40: "4S", 41: "7H", 
+            42: "4D", 43: "AC", 44: "9C", 45: "JS", 46: "QD", 47: "7C", 48: "QS", 49: "XD", 
+            50: "6C", 51: "AH", 52: "9D"
+        };
+
+        let firstClick = true; // Track first or second click
+        
+        function getCardPosition(MEM) {
+            return Object.keys(mnemonicaStack).find(key => mnemonicaStack[key] === MEM) || null;
+        }
+
+        function computeTopCard(MEM_position, SNN) {
+            if (MEM_position > SNN) return (MEM_position - SNN) + 1;
+            if (SNN > MEM_position) return 53 - (SNN - MEM_position);
+            return SNN;
+        }
+
+        document.getElementById("calculateButton").addEventListener("click", function() {
+            let MEM = document.getElementById("MEM").value.trim().toUpperCase();
+            let SNN = document.getElementById("SNN").value.trim();
+            let resultDisplay = document.getElementById("result");
+
+            // Validate SNN
+            if (!SNN || isNaN(SNN) || SNN < 1 || SNN > 52) {
+                alert("Position must be a number between 1 and 52.");
+                return;
+            }
+            SNN = parseInt(SNN);
+
+            // Validate MEM
+            if (!Object.values(mnemonicaStack).includes(MEM)) {
+                alert("Invalid card. Please enter a valid card from the Mnemonica stack.");
+                return;
+            }
+
+            let MEM_position = getCardPosition(MEM);
+            let Top_Card = computeTopCard(MEM_position, SNN);
+
+            if (firstClick) {
+                resultDisplay.innerText = `Top Card: ${Top_Card}`;
+                firstClick = false;
+            } else {
+                document.getElementById("MEM").value = "";
+                document.getElementById("SNN").value = "";
+                resultDisplay.innerText = "";
+                document.getElementById("MEM").focus();
+                firstClick = true;
+            }
+        });
+
+        document.getElementById("MEM").addEventListener("input", function() {
+            this.value = this.value.toUpperCase();
+        });
+    </script>
+
+</body>
+</html>
