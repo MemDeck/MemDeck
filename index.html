@@ -3,25 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mnemonica Top Card Calculator</title>
+    <title>Secret Calculator</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        input { margin: 5px; padding: 5px; text-transform: uppercase; }
-        button { background-color: lightblue; padding: 10px; cursor: pointer; }
-        #result { font-weight: bold; margin-top: 10px; }
+        input {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
+            padding: 10px;
+            font-size: 24px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+        #calculateButton {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            background-color: gray;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        #result {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: black;
+        }
     </style>
 </head>
 <body>
 
-    <h2>Mnemonica Top Card Calculator</h2>
-    
     <input type="text" id="MEM" placeholder="Enter Card (e.g., 4C)">
     <input type="number" id="SNN" placeholder="Enter Position (1-52)">
-    
-    <br><br>
-    
-    <button id="calculateButton">Calculate</button>
-    
+
+    <button id="calculateButton"></button>
+
     <p id="result"></p>
 
     <script>
@@ -35,8 +55,8 @@
             50: "6C", 51: "AH", 52: "9D"
         };
 
-        let firstClick = true; // Track first or second click
-        
+        let firstClick = true;
+
         function getCardPosition(MEM) {
             return Object.keys(mnemonicaStack).find(key => mnemonicaStack[key] === MEM) || null;
         }
@@ -52,24 +72,16 @@
             let SNN = document.getElementById("SNN").value.trim();
             let resultDisplay = document.getElementById("result");
 
-            // Validate SNN
-            if (!SNN || isNaN(SNN) || SNN < 1 || SNN > 52) {
-                alert("Position must be a number between 1 and 52.");
-                return;
-            }
+            if (!SNN || isNaN(SNN) || SNN < 1 || SNN > 52) return;
             SNN = parseInt(SNN);
 
-            // Validate MEM
-            if (!Object.values(mnemonicaStack).includes(MEM)) {
-                alert("Invalid card. Please enter a valid card from the Mnemonica stack.");
-                return;
-            }
+            if (!Object.values(mnemonicaStack).includes(MEM)) return;
 
             let MEM_position = getCardPosition(MEM);
             let Top_Card = computeTopCard(MEM_position, SNN);
 
             if (firstClick) {
-                resultDisplay.innerText = `Top Card: ${Top_Card}`;
+                resultDisplay.innerText = Top_Card;
                 firstClick = false;
             } else {
                 document.getElementById("MEM").value = "";
