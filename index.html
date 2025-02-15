@@ -3,45 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secret Calculator</title>
+    <title>Mnemonica Top Card Calculator</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        input {
-            display: block;
-            width: 80%;
-            margin: 10px auto;
-            padding: 10px;
-            font-size: 24px;
-            text-transform: uppercase;
-            text-align: center;
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 20px; 
+            position: relative; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start; 
+            align-items: center; 
         }
-        #calculateButton {
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
-            width: 40px;
-            height: 40px;
-            background-color: gray;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
+        
+        .input-container { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center;
+            width: 100%; 
+            margin-top: 20px; /* Moves input fields closer to the top */
+			gap: 40px; /* Adds space between input fields */
         }
-        #result {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            font-size: 12px;
-            color: black;
+
+        input { 
+            margin: 5px; 
+            padding: 8px; 
+            width: 120px; 
+            text-transform: uppercase; 
+            font-size: 80px; 
+            text-align: center; 
+        }
+
+        button { 
+            background-color: lightgray; 
+            width: 20px; 
+            height: 20px; 
+            border-radius: 50%; 
+            border: none; 
+            cursor: pointer; 
+            position: absolute; 
+            bottom: 10px; 
+            left: 10px; 
+        }
+
+        #result { 
+            font-weight: normal; 
+            position: absolute; 
+            bottom: 10px; 
+            right: 10px; 
+            font-size: 20px; 
         }
     </style>
 </head>
 <body>
 
-    <input type="text" id="MEM" placeholder="Enter Card (e.g., 4C)">
-    <input type="number" id="SNN" placeholder="Enter Position (1-52)">
+    <h2></h2>
+
+    <div class="input-container">
+        <input type="text" id="MEM" placeholder="">
+        <input type="number" id="SNN" placeholder="">
+    </div>
 
     <button id="calculateButton"></button>
-
     <p id="result"></p>
 
     <script>
@@ -72,17 +97,25 @@
             let SNN = document.getElementById("SNN").value.trim();
             let resultDisplay = document.getElementById("result");
 
-            if (!SNN || isNaN(SNN) || SNN < 1 || SNN > 52) return;
+            if (!SNN || isNaN(SNN) || SNN < 1 || SNN > 52) {
+                alert("Position must be a number between 1 and 52.");
+                return;
+            }
             SNN = parseInt(SNN);
 
-            if (!Object.values(mnemonicaStack).includes(MEM)) return;
+            if (!Object.values(mnemonicaStack).includes(MEM)) {
+                alert("Invalid card. Please enter a valid card from the Mnemonica stack.");
+                return;
+            }
 
             let MEM_position = getCardPosition(MEM);
             let Top_Card = computeTopCard(MEM_position, SNN);
 
             if (firstClick) {
-                resultDisplay.innerText = Top_Card;
-                firstClick = false;
+                resultDisplay.innerText = `${Top_Card}`;
+                resultDisplay.style.fontSize = "20px"; // Enlarged text size dynamically
+                resultDisplay.style.color = "black"; // Changed color for emphasis
+				firstClick = false;
             } else {
                 document.getElementById("MEM").value = "";
                 document.getElementById("SNN").value = "";
